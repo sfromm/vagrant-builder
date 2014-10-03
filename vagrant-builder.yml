@@ -1,0 +1,57 @@
+---
+# This attempts to be as standalone as possible.
+# Either edit the vars or override with -e.
+# Yes, this is fixed on F20 for now.
+- hosts: localhost
+  user: root
+
+  vars:
+      user_home: "{{ lookup('env', 'HOME') }}"
+
+  tasks:
+      - name: install dnf plugins
+        yum: name=dnf-plugins-core state=installed
+
+      - name: install vagrant copr repo
+        command: dnf -y copr enable {{copr_vagrant}} creates={{copr_repo_file}}
+
+      - name: install vagrant
+        yum: name=vagrant state=installed
+        with_items: vagrant_pkgs
+
+      - name: enable libvirtd
+        service: name=libvirtd state=started enabled=yes
+
+      - name: create virt-builder conf
+        template: src=virt-builder.conf.j2 dest=/etc/virt-builder/repos.d/local.conf
+
+      - name: create directories
+        with_items: virt_builder_images
+        file: path="{{builder_dir}}/{{item.name}}" state=directory
+
+      - name: create empty virt-builder index
+        command: touch {{builder_dir}}/index creates={{builder_dir}}/index
+
+      - name: copy Vagrantfile
+        template: src=Vagrantfile dest={{builder_dir}}/Vagrantfile
+
+      - name: create metadata for vagrant
+        template: src=metadata.j2 dest={{builder_dir}}/metadata.json
+
+      - name: build base images
+        with_items: virt_builder_images
+        environment:
+            LIBGUESTFS_BACKEND: direct
+        command: chdir={{builder_dir}}
+                 virt-builder {{item.name}}
+                 --selinux-relabel
+                 --format {{ format }}
+                 --size {{ size }}G
+                 --output {{item.name}}/box.img
+                 --run-command {{ item.run_command|join(' --run-command ') }}
+
+# https://github.com/pradels/vagrant-libvirt/tree/master/example_box
+      - name: create vagrant box
+        with_items: virt_builder_images
+        command: chdir={{builder_dir}}
+                 tar czf {{item.name}}.box metadata.json Vagrantfile {{item.name}}/box.img
