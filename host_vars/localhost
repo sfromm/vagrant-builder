@@ -12,11 +12,11 @@ builder_dir: "{{user_home}}/builder"
 format: qcow2
 size: 10
 ansible_pull: |-
-    ansible-pull --url git://192.168.122.1/vagrant-builder -d /root/builder bootstrap.yml
+    ansible-pull --url git://github.com/sfromm/vagrant-builder.git -d /root/builder bootstrap.yml
 vagrant_metadata: '{ "provider": "libvirt", "format": "{{format}}", "virtual_size": {{size}} }'
 virt_builder_images:
     - name: centos-7.0
       run_command:
           - '"yum install -y http://epel.osuosl.org/7/x86_64/e/epel-release-7-2.noarch.rpm"'
-          - '"yum install -y ansible"'
+          - '"yum install -y ansible git"'
           - '"{{ansible_pull}}"'
