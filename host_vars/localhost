@@ -1,0 +1,21 @@
+---
+vagrant_pass: "$5$zUgfPaNv$Qs7kb9tZ67hk1nddKpGxuKHGPSoPQT3LwqC4vDwoOn1"
+vagrant_pkgs:
+    - vagrant
+    - libvirt
+    - libvirt-daemon-kvm
+    - libguestfs-tools
+copr_vagrant: jstribny/vagrant-f20
+copr_repo_file: /etc/yum.repos.d/_copr_jstribny-vagrant-f20.repo
+builder_dir: "{{user_home}}/builder"
+format: qcow2
+size: 10
+ansible_pull: |-
+    ansible-pull --url git://192.168.122.1/sfromm/vagrant-builder.git -d /root/builder -i hosts bootstrap.yml
+vagrant_metadata: '{ "provider": "libvirt", "format": "{{format}}", "virtual_size": {{size}} }'
+virt_builder_images:
+    - name: centos-7.0
+      run_command:
+          - '"yum install -y http://epel.osuosl.org/7/x86_64/e/epel-release-7-2.noarch.rpm"'
+          - '"yum install -y ansible"'
+          - '"{{ansible_pull}}"
