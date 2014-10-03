@@ -1,0 +1,37 @@
+---
+- name: apply basic bootstrapping to a box
+  hosts: localhost
+  connection: local
+  user: root
+
+  tasks:
+      - name: install needed packages
+        yum: name={{item}} state=installed
+        with_items:
+            - acpid
+            - git
+            - libselinux-python
+            - openssh-server
+            - openssh-clients
+            - rsync
+            - wget
+            - yum-utils
+
+      - name: create user vagrant
+        user: name=vagrant groups=adm,wheel append=yes password={{vagrant_pass}}
+
+      - name: update sudoers
+        lineinfile: dest=/etc/sudoers state=present
+                    regexp="{{item.regex}}" line="{{item.line}}"
+        with_items:
+            - { regex: "^%wheel\s+ALL=(ALL)\s+ALL", line="# %wheel  ALL=(ALL)  ALL" }
+            - { regex: "^# %wheel\.*NOPASSWD", line="%wheel   ALL=(ALL)  NOPASSWD: ALL" }
+
+      - name: disable firewalld
+        service: name=firewalld enabled=no
+
+      - name: enable ssh
+        service: name=sshd enabled=yes
+
+      - name: update packages
+        command: yum -y update
