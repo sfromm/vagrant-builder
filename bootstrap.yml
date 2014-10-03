@@ -21,11 +21,7 @@
         user: name=vagrant groups=adm,wheel append=yes password={{vagrant_pass}}
 
       - name: update sudoers
-        lineinfile: dest=/etc/sudoers state=present
-                    regexp="{{item.regex}}" line="{{item.line}}"
-        with_items:
-            - { regex: "^%wheel\\s+ALL=(ALL)\\s+ALL", line: "# %wheel  ALL=(ALL)  ALL" }
-            - { regex: "^# %wheel.*NOPASSWD", line: "%wheel   ALL=(ALL)  NOPASSWD: ALL" }
+        copy: src=sudoers dest=/etc/sudoers.d/vagrant mode=0600
 
       - name: disable firewalld
         service: name=firewalld enabled=no
