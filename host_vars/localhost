@@ -12,7 +12,7 @@ builder_dir: "{{user_home}}/builder"
 format: qcow2
 size: 10
 ansible_pull: |-
-    ansible-pull --url git://192.168.122.1/vagrant-builder -d /root/builder -i hosts bootstrap.yml
+    ansible-pull --url git://192.168.122.1/vagrant-builder -d /root/builder bootstrap.yml
 vagrant_metadata: '{ "provider": "libvirt", "format": "{{format}}", "virtual_size": {{size}} }'
 virt_builder_images:
     - name: centos-7.0
