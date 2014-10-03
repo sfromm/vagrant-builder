@@ -1,29 +1,4 @@
 ---
-# This attempts to be as standalone as possible.
-# Either edit the vars or override with -e.
-# Yes, this is fixed on F20 for now.
-- hosts: localhost
-  name: install vagrant
-  user: root
-  gather_facts: no
-
-  tasks:
-      - name: install dnf plugins
-        yum: name=dnf-plugins-core state=installed
-
-      - name: install vagrant copr repo
-        command: dnf -y copr enable {{copr_vagrant}} creates={{copr_repo_file}}
-
-      - name: install vagrant
-        yum: name=vagrant state=installed
-        with_items: vagrant_pkgs
-
-      - name: enable libvirtd
-        service: name=libvirtd state=started enabled=yes
-
-      - name: create virt-builder conf
-        template: src=virt-builder.conf.j2 dest=/etc/virt-builder/repos.d/local.conf
-
 - hosts: localhost
   name: build boxes
   gather_facts: no
