@@ -3,10 +3,9 @@
 # Either edit the vars or override with -e.
 # Yes, this is fixed on F20 for now.
 - hosts: localhost
+  name: install vagrant
   user: root
-
-  vars:
-      user_home: "{{ lookup('env', 'HOME') }}"
+  gather_facts: no
 
   tasks:
       - name: install dnf plugins
@@ -25,6 +24,14 @@
       - name: create virt-builder conf
         template: src=virt-builder.conf.j2 dest=/etc/virt-builder/repos.d/local.conf
 
+- hosts: localhost
+  name: build boxes
+  gather_facts: no
+
+  vars:
+      user_home: "{{ lookup('env', 'HOME') }}"
+
+  tasks:
       - name: create directories
         with_items: virt_builder_images
         file: path="{{builder_dir}}/{{item.name}}" state=directory
@@ -32,13 +39,16 @@
       - name: create empty virt-builder index
         command: touch {{builder_dir}}/index creates={{builder_dir}}/index
 
-      - name: copy Vagrantfile
-        template: src=Vagrantfile dest={{builder_dir}}/Vagrantfile
+      - name: copy vagrantfile
+        copy: src=Vagrantfile dest={{builder_dir}}/Vagrantfile
 
-      - name: create metadata for vagrant
+      - name: copy virt-builder password
+        copy: src=password dest={{builder_dir}}/password
+
+      - name: create vagrant metadata.json
         template: src=metadata.j2 dest={{builder_dir}}/metadata.json
 
-      - name: build base images
+      - name: build images
         with_items: virt_builder_images
         environment:
             LIBGUESTFS_BACKEND: direct
@@ -48,6 +58,7 @@
                  --format {{ format }}
                  --size {{ size }}G
                  --output {{item.name}}/box.img
+                 --root-password file:{{builder_dir}}/password
                  --run-command {{ item.run_command|join(' --run-command ') }}
 
 # https://github.com/pradels/vagrant-libvirt/tree/master/example_box
