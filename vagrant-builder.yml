@@ -12,14 +12,16 @@
       - name: create empty virt-builder index
         command: touch {{builder_dir}}/index creates={{builder_dir}}/index
 
-      - name: copy vagrantfile
-        copy: src=Vagrantfile dest={{builder_dir}}/Vagrantfile
-
       - name: copy virt-builder password
         copy: src=password dest={{builder_dir}}/password
 
       - name: create vagrant metadata.json
-        template: src=metadata.j2 dest={{builder_dir}}/metadata.json
+        with_items: virt_builder_images
+        template: src=metadata.j2 dest={{builder_dir}}/{{item.name}}/metadata.json
+
+      - name: copy vagrantfile
+        with_items: virt_builder_images
+        copy: src=Vagrantfile dest={{builder_dir}}/{{item.name}}/Vagrantfile
 
       - name: build images
         with_items: virt_builder_images
@@ -37,5 +39,19 @@
 # https://github.com/pradels/vagrant-libvirt/tree/master/example_box
       - name: create vagrant box
         with_items: virt_builder_images
-        command: chdir={{builder_dir}}
-                 tar czf {{item.name}}.box metadata.json Vagrantfile {{item.name}}/box.img
+        command: chdir={{builder_dir}}/{{item.name}}
+                 tar czf {{builder_dir}}/{{item.name}}.box metadata.json Vagrantfile box.img
+
+      - name: get installed boxes
+        command: vagrant box list
+        register: vagrant_boxes
+
+      - name: install new boxes
+        with_items: virt_builder_images
+        when: "item.name not in vagrant_boxes.stdout"
+        command: vagrant box add --name {{item.name}} {{builder_dir}}/{{item.name}}.box
+
+      - name: upgrade existing boxes
+        with_items: virt_builder_images
+        when: "item.name in vagrant_boxes.stdout"
+        command: vagrant box upgrade --box {{item.name}} {{builder_dir}}/{{item.name}}.box
