@@ -15,3 +15,11 @@ General usage:
     ansible-playbook vagrant-setup.yml
 
 Most variables are defined in inventory.  Update them there or overrride them.
+
+Miscellaneous resources
+----------------------
+
+- [Getting Started with Vagrant](http://docs.vagrantup.com/v2/getting-started/index.html)
+- [Creating a base box](http://docs.vagrantup.com/v2/boxes/base.html)
+- [Ansible Provisioner](http://docs.vagrantup.com/v2/provisioning/ansible.html)
+- [Using Vagrant and Ansible](http://docs.ansible.com/guide_vagrant.html)
