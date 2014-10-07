@@ -1,32 +1,40 @@
 # -*- mode: ruby -*-
-# vi: set ft=ruby :
 
-Vagrant.configure('2') do |config|
+# Require libvirt
+Vagrant.require_plugin "vagrant-libvirt"
 
-    # Example configuration of new VM..
-    #
-    #config.vm.define :test_vm do |test_vm|
-        # Box name
-        #
-        #test_vm.vm.box = 'centos-6'
+# Vagrantfile API/syntax version.
+VAGRANTFILE_API_VERSION = "2"
 
-	# Domain Specific Options
-	#
-	# See README for more info.
-	#
-	#test_vm.vm.provider :libvirt do |domain|
-	#	domain.memory = 2048
-	#	domain.cpus = 2
-	#end
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
-        # Interfaces for VM
-        #
-        # Networking features in the form of `config.vm.network` support private
-        # networks concept. No public network or port forwarding are supported in
-        # current version of provider. See README for more info.
-        #
-        #test_vm.vm.network :private_network, :ip => '10.20.30.40'
-    #end
+    # Every Vagrant virtual environment requires a box to build off of.
+    #config.vm.box = "centos-7.0"
+
+    # URL that a configured box can be found
+    #config.vm.box_url = "file:///path/builder/centos-7.0"
+
+    # Disable automatic box update checking. If you disable this, then
+    # boxes will only be checked for updates when the user runs
+    # `vagrant box outdated`. This is not recommended.
+    # config.vm.box_check_update = false
+
+    # Create a forwarded port mapping which allows access to a specific port
+    # within the machine from a port on the host machine. In the example below,
+    # accessing "localhost:8080" will access port 80 on the guest machine.
+    # config.vm.network "forwarded_port", guest: 80, host: 8080
+    # Create a private network, which allows host-only access to the machine
+    # using a specific IP.
+    # config.vm.network "private_network", ip: "192.168.33.10"
+
+    # Create a public network, which generally matched to bridged network.
+    # Bridged networks make the machine appear as another physical device on
+    # your network.
+    # config.vm.network "public_network"
+
+    # If true, then any SSH connections made will enable agent forwarding.
+    # Default value: false
+    config.ssh.forward_agent = true
 
     # Options for libvirt vagrant provider.
     config.vm.provider :libvirt do |libvirt|
@@ -52,6 +60,10 @@ Vagrant.configure('2') do |config|
         # Libvirt storage pool name, where box image and instance snapshots will
         # be stored.
         libvirt.storage_pool_name = 'default'
+    end
+
+    config.vm.provision :ansible do |ansible|
+        ansible.playbook = 'playbook.yml'
     end
 end
 
