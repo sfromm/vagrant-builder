@@ -17,17 +17,17 @@
             - wget
             - yum-utils
 
+      - name: remove firewalld
+        yum: name=firewalld state=absent
+
       - name: create user vagrant
         user: name=vagrant groups=adm,wheel append=yes password={{vagrant_pass}}
 
       - name: update sudoers
         copy: src=sudoers dest=/etc/sudoers.d/vagrant mode=0600
 
-      - name: disable firewalld
-        service: name=firewalld enabled=no state=stopped
-
       - name: enable ssh
-        service: name=sshd enabled=yes state=started
+        service: name=sshd enabled=yes
 
       - name: update packages
         command: yum -y update
