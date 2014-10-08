@@ -9,28 +9,32 @@ VAGRANTFILE_API_VERSION = "2"
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     # Every Vagrant virtual environment requires a box to build off of.
-    #config.vm.box = "centos-7.0"
+    #config.vm.define "guest" do |guest|
+    #    guest.vm.box = "centos-7.0"
 
-    # URL that a configured box can be found
-    #config.vm.box_url = "file:///path/builder/centos-7.0"
+        # URL that a configured box can be found
+    #    guest.vm.box_url = "file:///path/builder/centos-7.0"
 
-    # Disable automatic box update checking. If you disable this, then
-    # boxes will only be checked for updates when the user runs
-    # `vagrant box outdated`. This is not recommended.
-    # config.vm.box_check_update = false
+        # Disable automatic box update checking. If you disable this, then
+        # boxes will only be checked for updates when the user runs
+        # `vagrant box outdated`. This is not recommended.
+        # guest.vm.box_check_update = false
 
-    # Create a forwarded port mapping which allows access to a specific port
-    # within the machine from a port on the host machine. In the example below,
-    # accessing "localhost:8080" will access port 80 on the guest machine.
-    # config.vm.network "forwarded_port", guest: 80, host: 8080
-    # Create a private network, which allows host-only access to the machine
-    # using a specific IP.
-    # config.vm.network "private_network", ip: "192.168.33.10"
+        # Create a forwarded port mapping which allows access to a specific port
+        # within the machine from a port on the host machine. In the example below,
+        # accessing "localhost:8080" will access port 80 on the guest machine.
+        # config.vm.network "forwarded_port", guest: 80, host: 8080
+        # Create a private network, which allows host-only access to the machine
+        # using a specific IP.
+        # guest.vm.network "private_network", ip: "192.168.33.10"
 
-    # Create a public network, which generally matched to bridged network.
-    # Bridged networks make the machine appear as another physical device on
-    # your network.
-    # config.vm.network "public_network"
+        # Create a public network, which generally matched to bridged network.
+        # Bridged networks make the machine appear as another physical device on
+        # your network.
+        # guest.vm.network "public_network"
+    #end
+
+
 
     # If true, then any SSH connections made will enable agent forwarding.
     # Default value: false
@@ -62,8 +66,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         libvirt.storage_pool_name = 'default'
     end
 
-    config.vm.provision :ansible do |ansible|
-        ansible.playbook = 'vagrant.yml'
-    end
+    #config.vm.provision :ansible do |ansible|
+    #    ansible.groups = { "group1" => ["guest"] }
+    #    ansible.playbook = 'vagrant.yml'
+    #end
 end
 
