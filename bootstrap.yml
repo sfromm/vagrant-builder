@@ -24,10 +24,10 @@
         copy: src=sudoers dest=/etc/sudoers.d/vagrant mode=0600
 
       - name: disable firewalld
-        service: name=firewalld enabled=no
+        service: name=firewalld enabled=no state=stopped
 
       - name: enable ssh
-        service: name=sshd enabled=yes
+        service: name=sshd enabled=yes state=started
 
       - name: update packages
         command: yum -y update
