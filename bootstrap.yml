@@ -23,6 +23,12 @@
       - name: create user vagrant
         user: name=vagrant groups=adm,wheel append=yes password={{vagrant_pass}}
 
+      - name: deploy ssh authorized_keys
+        authorized_key: user={{item}} key="{{ lookup('file', 'vagrant.pub') }}"
+        with_items:
+            - root
+            - vagrant
+
       - name: update sudoers
         copy: src=sudoers dest=/etc/sudoers.d/vagrant mode=0600
 
