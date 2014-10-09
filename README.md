@@ -1,18 +1,21 @@
 vagrant-builder
 ===============
 
-This is intended to set up a workstation for vagrant.  At this time,
-that is limited to Fedora 20.  There are two ansible playbooks:
+This is intended to set up a workstation for vagrant and build base
+boxes for use with vagrant.  At this time, **vagrant-setup.yml** assumes
+it is setting up a Fedora 20 host for use with Vagrant and Libvirt.
 
-- *vagrant-setup.yml*:  Installs the necessary packages and does other
+There are two ansible playbooks:
+
+- **vagrant-setup.yml**:  Installs the necessary packages and does other
    actions that requires root to prepare the workstation.
-- *vagrant-builder.yml*: Copies configuration files to ~/builder and
+- **vagrant-builder.yml**: Copies configuration files to *~/builder* and
    runs *virt-builder* to create boxes, as defined in inventory.
 
 General usage:
 
-    ansible-playbook vagrant-builder.yml
     ansible-playbook vagrant-setup.yml
+    ansible-playbook vagrant-builder.yml
 
 Most variables are defined in inventory.  Update them there or overrride them.
 
