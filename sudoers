@@ -1,2 +1,2 @@
-Defaults:vagrant    !requiretty
-vagrant             ALL=(ALL)  NOPASSWD: ALL
+Defaults:%wheel    !requiretty
+%wheel             ALL=(ALL)  NOPASSWD: ALL

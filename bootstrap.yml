@@ -23,6 +23,9 @@
       - name: create user vagrant
         user: name=vagrant groups=adm,wheel append=yes password={{vagrant_pass}}
 
+      - name: add root to wheel
+        user: name=root groups=wheel append=yes
+
       - name: deploy ssh authorized_keys
         authorized_key: user={{item}} key="{{ lookup('file', 'vagrant.pub') }}"
         with_items:
