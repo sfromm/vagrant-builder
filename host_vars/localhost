@@ -16,8 +16,13 @@ ansible_pull: |-
     ansible-pull --url https://github.com/sfromm/vagrant-builder.git -d /root/builder bootstrap.yml
 vagrant_metadata: '{ "provider": "libvirt", "format": "{{format}}", "virtual_size": {{size}} }'
 virt_builder_images:
-    - name: centos-7.0
+    - name: centos-7
       run_command:
           - '"yum install -y http://epel.osuosl.org/7/x86_64/e/epel-release-7-2.noarch.rpm"'
+          - '"yum install -y ansible git"'
+          - '"{{ansible_pull}}"'
+    - name: centos-6
+      run_command:
+          - '"yum install -y http://epel.osuosl.org/7/x86_64/epel-release-6-8.noarch.rpm"'
           - '"yum install -y ansible git"'
           - '"{{ansible_pull}}"'
