@@ -36,6 +36,11 @@
                  --root-password file:{{builder_dir}}/password
                  --run-command {{ item.run_command|join(' --run-command ') }}
 
+      - name: sparsify the images
+        with_items: virt_builder_images
+        command: chdir={{builder_dir}}
+                 virt-sparsify --in-place {{item.name}}/box.img
+
 # https://github.com/pradels/vagrant-libvirt/tree/master/example_box
       - name: create vagrant box
         with_items: virt_builder_images
