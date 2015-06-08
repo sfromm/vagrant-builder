@@ -17,16 +17,17 @@ General usage:
     ansible-playbook vagrant-setup.yml
     ansible-playbook vagrant-builder.yml
 
-Most variables are defined in inventory.  Update them there or overrride them.
-
 Customization
 -------------
 
 There are two areas where you can customize the build of your box:
 
 - The variable **extra_virt_builder_options**.  Add options to pass to
-  *virt-builder* here.  This variables is defined via inventory.
+  *virt-builder* here.  This variable is defined via inventory.
 - Customize *bootstrap.yml*, the playbook that is run when the box is customized.
+
+Inventory variables can be overridden by editing the group inventory file or
+updating a *host_vars/localhost*.  The latter method is recommended.
 
 Varible definitions
 -------------------

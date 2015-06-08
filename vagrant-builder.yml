@@ -17,6 +17,7 @@
       with_items:
         - bootstrap.yml
         - hosts
+        - group_vars/all
         - host_vars/localhost
         - password
         - requirements
@@ -40,9 +41,11 @@
         virt-builder {{item}}
         --output {{item}}/box.img
         --mkdir /root/host_vars
+        --mkdir /root/group_vars
         --upload {{ builder_dir }}/sudoers:/root
         --upload {{ builder_dir }}/vagrant.pub:/root
         --upload {{ builder_dir }}/hosts:/root
+        --upload {{ builder_dir }}/all:/root/group_vars
         --upload {{ builder_dir }}/localhost:/root/host_vars
         --upload {{ builder_dir }}/bootstrap.yml:/root
         {{ virt_builder_options }}

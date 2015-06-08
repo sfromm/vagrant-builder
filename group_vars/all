@@ -1,0 +1,31 @@
+---
+#
+# variables related to vagrant-setup
+vagrant_pkgs:
+    - vagrant
+    - vagrant-libvirt
+    - libvirt
+    - libvirt-daemon-kvm
+    - libguestfs-tools
+#
+# variables related to vagrant-builder
+user_home: "{{ lookup('env', 'HOME') }}"
+builder_dir: "{{user_home}}/builder"
+format: qcow2
+size: 10
+vagrant_metadata: '{ "provider": "libvirt", "format": "{{format}}", "virtual_size": {{size}} }'
+# vagrant_pass is 'vagrant'
+vagrant_pass: "$5$zUgfPaNv$Qs7kb9tZ67hk1nddKpGxuKHGPSoPQT3LwqC4vDwoOn1"
+virt_builder_options: |
+  --selinux-relabel
+  --format {{ format }}
+  --size {{ size }}G
+  --root-password file:{{ builder_dir }}/password
+  --run-command "yum -y install epel-release"
+  --run-command "yum -y install ansible"
+  --run-command "ansible-playbook -i /root/hosts /root/bootstrap.yml"
+  --update
+virt_builder_images:
+  - centos-7.1
+  - centos-6
+extra_virt_builder_options: ""
