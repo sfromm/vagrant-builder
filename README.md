@@ -2,8 +2,9 @@ vagrant-builder
 ===============
 
 This is intended to set up a workstation for vagrant and build base
-boxes for use with vagrant.  At this time, **vagrant-setup.yml** assumes
-it is setting up a Fedora 21 host for use with Vagrant and Libvirt.
+boxes for use with Vagrant and Libvirt.  The playbook
+**vagrant-setup.yml** is tested with Fedora 21, but should also work
+with Fedora 22.
 
 There are two ansible playbooks:
 
