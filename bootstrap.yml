@@ -5,38 +5,32 @@
   user: root
 
   tasks:
-      - name: install needed packages
-        yum: name={{item}} state=installed
-        with_items:
-            - acpid
-            - git
-            - libselinux-python
-            - openssh-server
-            - openssh-clients
-            - rsync
-            - wget
-            - yum-utils
+    - name: install needed packages
+      yum: name={{item}} state=installed
+      with_items:
+        - acpid
+        - git
+        - libselinux-python
+        - openssh-server
+        - openssh-clients
+        - rsync
+        - wget
+        - yum-utils
 
-      - name: remove firewalld
-        yum: name=firewalld state=absent
+    - name: remove firewalld
+      yum: name=firewalld state=absent
 
-      - name: create user vagrant
-        user: name=vagrant groups=adm,wheel append=yes password={{vagrant_pass}}
+    - name: create user vagrant
+      user: name=vagrant groups=adm,wheel append=yes password={{vagrant_pass}}
 
-      - name: add root to wheel
-        user: name=root groups=wheel append=yes
+    - name: add root to wheel
+      user: name=root groups=wheel append=yes
 
-      - name: deploy ssh authorized_keys
-        authorized_key: user={{item}} key="{{ lookup('file', 'vagrant.pub') }}"
-        with_items:
-            - root
-            - vagrant
+    - name: deploy ssh authorized_keys
+      authorized_key: user={{item}} key="{{ lookup('file', 'vagrant.pub') }}"
+      with_items:
+        - root
+        - vagrant
 
-      - name: update sudoers
-        copy: src=sudoers dest=/etc/sudoers.d/vagrant mode=0600
-
-      - name: enable ssh
-        service: name=sshd enabled=yes
-
-      - name: update packages
-        command: yum -y update
+    - name: update sudoers
+      copy: src=sudoers dest=/etc/sudoers.d/vagrant mode=0600

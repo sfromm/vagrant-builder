@@ -1,28 +1,31 @@
 ---
-user_home: "{{ lookup('env', 'HOME') }}"
-# vagrant_pass is 'vagrant'
-vagrant_pass: "$5$zUgfPaNv$Qs7kb9tZ67hk1nddKpGxuKHGPSoPQT3LwqC4vDwoOn1"
+#
+# variables related to vagrant-setup
 vagrant_pkgs:
     - vagrant
+    - vagrant-libvirt
     - libvirt
     - libvirt-daemon-kvm
     - libguestfs-tools
-copr_vagrant: jstribny/vagrant-f20
-copr_repo_file: /etc/yum.repos.d/_copr_jstribny-vagrant-f20.repo
+#
+# variables related to vagrant-builder
+user_home: "{{ lookup('env', 'HOME') }}"
 builder_dir: "{{user_home}}/builder"
 format: qcow2
 size: 10
-ansible_pull: |-
-    ansible-pull --url https://github.com/sfromm/vagrant-builder.git -d /root/builder bootstrap.yml
 vagrant_metadata: '{ "provider": "libvirt", "format": "{{format}}", "virtual_size": {{size}} }'
+# vagrant_pass is 'vagrant'
+vagrant_pass: "$5$zUgfPaNv$Qs7kb9tZ67hk1nddKpGxuKHGPSoPQT3LwqC4vDwoOn1"
+virt_builder_options: |
+  --selinux-relabel
+  --format {{ format }}
+  --size {{ size }}G
+  --root-password file:{{ builder_dir }}/password
+  --run-command "yum -y install epel-release"
+  --run-command "yum -y install ansible"
+  --run-command "ansible-playbook -i /root/hosts /root/bootstrap.yml"
+  --update
 virt_builder_images:
-    - name: centos-7.0
-      run_command:
-          - '"yum install -y http://epel.osuosl.org/7/x86_64/e/epel-release-7-2.noarch.rpm"'
-          - '"yum install -y ansible git"'
-          - '"{{ansible_pull}}"'
-    - name: centos-6
-      run_command:
-          - '"yum install -y http://epel.osuosl.org/6/x86_64/epel-release-6-8.noarch.rpm"'
-          - '"yum install -y ansible git"'
-          - '"{{ansible_pull}}"'
+  - centos-7.1
+  - centos-6
+extra_virt_builder_options: ""

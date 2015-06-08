@@ -1,33 +1,26 @@
 ---
-# Yes, this is fixed on F20 for now.
 - hosts: localhost
   name: install vagrant
   user: root
   gather_facts: no
 
   tasks:
-      - name: install dnf plugins
-        yum: name=dnf-plugins-core state=installed
+    - name: install vagrant
+      yum: name=vagrant state=installed
+      with_items: vagrant_pkgs
 
-      - name: install vagrant copr repo
-        command: dnf -y copr enable {{copr_vagrant}} creates={{copr_repo_file}}
+    - name: enable libvirtd
+      service: name=libvirtd state=started enabled=yes
 
-      - name: install vagrant
-        yum: name=vagrant state=installed
-        with_items: vagrant_pkgs
+    - name: create virt-builder conf
+      template: src=virt-builder.conf.j2 dest=/etc/virt-builder/repos.d/local.conf
 
-      - name: enable libvirtd
-        service: name=libvirtd state=started enabled=yes
+    - name: create polkit pkla file
+      copy: >
+        src=vagrant.pkla
+        dest=/etc/polkit-1/localauthority/50-local.d/vagrant.pkla
 
-      - name: create virt-builder conf
-        template: src=virt-builder.conf.j2 dest=/etc/virt-builder/repos.d/local.conf
-
-      - name: create polkit pkla file
-        copy: >
-            src=vagrant.pkla
-            dest=/etc/polkit-1/localauthority/50-local.d/vagrant.pkla
-
-      - name: create polkit rules file
-        copy: >-
-            src=vagrant.rules
-            dest=/etc/polkit-1/rules.d/80-vagrant.rules
+    - name: create polkit rules file
+      copy: >-
+        src=vagrant.rules
+        dest=/etc/polkit-1/rules.d/80-vagrant.rules
