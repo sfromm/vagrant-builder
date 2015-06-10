@@ -6,7 +6,7 @@
 
   tasks:
     - name: install vagrant
-      yum: name=vagrant state=installed
+      yum: name={{ item }} state=installed
       with_items: vagrant_pkgs
 
     - name: enable libvirtd
