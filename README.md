@@ -55,6 +55,34 @@ variables.
 - **virt_builder_images**: List of images to build for vagrant.
   Presently defaults to `centos-6` and `centos-7.1`.
 
+Workflow
+--------
+
+The following is an example workflow:
+
+1. Set up your workstation for *vagrant*.  Only needs to be run one.
+```
+$ ansible-playbook vagrant-setup.yml
+```
+2. Build *vagrant* boxes for development and testing purposes.  You may
+want to consider updating the *virt_builder_images* variable.  This can
+be run as needed to build new boxes or update existing ones.
+```
+$ $EDITOR host_vars/localhost
+$ ansible-playbook vagrant-builder.yml
+```
+3. Change to a working directory (eg. `cd provision`) and run
+*vagrant*.  You can copy the *Vagrantfile* to the subdirectory.  You
+probably also want to create an Ansible playbook to provision your
+Vagrant machine.
+```
+$ cp Vagrantfile provision/ && cd provision
+$ $EDITOR Vagrantfile
+$ $EDITOR vagrant.yml
+$ vagrant up
+$ vagrant provision
+```
+
 Miscellaneous resources
 ----------------------
 

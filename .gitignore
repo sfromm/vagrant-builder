@@ -1,0 +1,3 @@
+.vagrant
+/provision/*
+!/provision/.keep
