@@ -20,7 +20,6 @@
         - group_vars/all
         - host_vars/localhost
         - password
-        - requirements
         - sudoers
         - vagrant.pub
 
