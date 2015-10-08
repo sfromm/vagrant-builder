@@ -6,7 +6,7 @@
 
   tasks:
     - name: create directories
-      file: path="{{ builder_dir }}/{{ item }}" state=directory
+      file: path="{{ builder_dir }}/{{ item.name }}" state=directory
       with_items: virt_builder_images
 
     - name: create empty virt-builder index
@@ -24,12 +24,12 @@
         - vagrant.pub
 
     - name: create vagrant metadata.json
-      template: src=metadata.j2 dest={{ builder_dir }}/{{ item }}/metadata.json
+      template: src=metadata.j2 dest={{ builder_dir }}/{{ item.name }}/metadata.json
       with_items: virt_builder_images
 
     - name: copy vagrantfile
       with_items: virt_builder_images
-      copy: src=Vagrantfile dest={{builder_dir}}/{{item}}/Vagrantfile
+      copy: src=Vagrantfile dest={{ builder_dir }}/{{ item.name }}/Vagrantfile
 
     - name: build images
       with_items: virt_builder_images
@@ -37,8 +37,8 @@
         LIBGUESTFS_BACKEND: direct
       command: >
         chdir={{builder_dir}}
-        virt-builder {{item}}
-        --output {{item}}/box.img
+        virt-builder {{ item.name }}
+        --output {{ item.name }}/box.img
         --mkdir /root/host_vars
         --mkdir /root/group_vars
         --upload {{ builder_dir }}/sudoers:/root
@@ -48,19 +48,21 @@
         --upload {{ builder_dir }}/localhost:/root/host_vars
         --upload {{ builder_dir }}/bootstrap.yml:/root
         {{ virt_builder_options }}
-        {{ extra_virt_builder_options }}
+        {{ item.options }}
 
     - name: sparsify the images
       with_items: virt_builder_images
+      environment:
+        LIBGUESTFS_BACKEND: direct
       command: >
-        chdir={{builder_dir}} virt-sparsify --in-place {{item}}/box.img
+        chdir={{ builder_dir }} virt-sparsify --in-place {{ item.name }}/box.img
 
 # https://github.com/pradels/vagrant-libvirt/tree/master/example_box
     - name: create vagrant box
       with_items: virt_builder_images
       command: >
-        chdir={{builder_dir}}/{{item}}
-        tar czf {{builder_dir}}/{{item}}.box metadata.json Vagrantfile box.img
+        chdir={{ builder_dir }}/{{ item.name }}
+        tar czf {{ builder_dir }}/{{ item.name }}.box metadata.json Vagrantfile box.img
 
     - name: get installed boxes
       command: vagrant box list
@@ -68,10 +70,10 @@
 
     - name: install new boxes
       with_items: virt_builder_images
-      when: "item not in vagrant_boxes.stdout"
-      command: vagrant box add --name {{item}} {{builder_dir}}/{{item}}.box
+      when: "item.name not in vagrant_boxes.stdout"
+      command: vagrant box add --name {{ item.name }} {{ builder_dir }}/{{ item.name }}.box
 
     - name: upgrade existing boxes
       with_items: virt_builder_images
-      when: "item in vagrant_boxes.stdout"
-      command: vagrant box upgrade --box {{item}} {{builder_dir}}/{{item}}.box
+      when: "item.name in vagrant_boxes.stdout"
+      command: vagrant box upgrade --box {{ item.name }} {{ builder_dir }}/{{ item.name }}.box
