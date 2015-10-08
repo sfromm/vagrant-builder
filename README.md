@@ -21,11 +21,13 @@ General usage:
 Customization
 -------------
 
-There are two areas where you can customize the build of your box:
+If you want to customize the build of your *vagrant* *box*, there are
+two options:
 
-- The variable **extra_virt_builder_options**.  Add options to pass to
-  *virt-builder* here.  This variable is defined via inventory.
-- Customize *bootstrap.yml*, the playbook that is run when the box is customized.
+- Customize the variable `virt_builder_options` or
+  `virt_builder_images`.  Values for these variables are passed to
+  *virt-builder*.  This variable is defined via inventory.
+- Customize *bootstrap.yml*, the playbook that is run when the image is customized.
 
 Inventory variables can be overridden by editing the group inventory file or
 updating a *host_vars/localhost*.  The latter method is recommended.
@@ -49,11 +51,11 @@ variables.
 - **vagrant_pass**:  Encrypted password for *vagrant* user.  Defaults to
   `vagrant`.
 - **virt_builder_options**:  Options passed to *virt-builder* when
-  creating the image.
-- **extra_virt_builder_options**:  Additional options to pass to
-  *virt_builder*.  Please use this for customization.
-- **virt_builder_images**: List of images to build for vagrant.
-  Presently defaults to `centos-6` and `centos-7.1`.
+  creating the image.  These are options common to any image creation.
+- **virt_builder_images**: List of images to build for vagrant.  Each
+  element in the list is a dictionary with two keys: `name`, the guest
+  to build, and `options`, the options to pass to *virt-builder* when
+  building a specific image.
 
 Workflow
 --------
