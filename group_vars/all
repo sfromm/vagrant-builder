@@ -21,11 +21,19 @@ virt_builder_options: |
   --format {{ format }}
   --size {{ size }}G
   --root-password file:{{ builder_dir }}/password
-  --run-command "yum -y install epel-release"
-  --run-command "yum -y install ansible"
-  --run-command "ansible-playbook -i /root/hosts /root/bootstrap.yml"
   --update
 virt_builder_images:
-  - centos-7.1
-  - centos-6
-extra_virt_builder_options: ""
+  - name: centos-7.1
+    options: |
+      --run-command "yum -y install epel-release"
+      --run-command "yum -y install ansible"
+      --run-command "ansible-playbook -i /root/hosts /root/bootstrap.yml"
+  - name: centos-6
+    options: |
+      --run-command "yum -y install epel-release"
+      --run-command "yum -y install ansible"
+      --run-command "ansible-playbook -i /root/hosts /root/bootstrap.yml"
+  - name: debian-8
+    options: |
+      --run-command "apt-get --yes install ansible"
+      --run-command "ansible-playbook -i /root/hosts /root/bootstrap.yml"
