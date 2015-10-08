@@ -16,9 +16,11 @@
         - rsync
         - wget
         - yum-utils
+      when: ansible_os_family == "RedHat"
 
     - name: remove firewalld
       yum: name=firewalld state=absent
+      when: ansible_os_family == "RedHat"
 
     - name: create user vagrant
       user: name=vagrant groups=adm,wheel append=yes password={{vagrant_pass}}
