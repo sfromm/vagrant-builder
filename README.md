@@ -85,6 +85,25 @@ $ vagrant up
 $ vagrant provision
 ```
 
+Possible Issues
+-------------------
+
+* Error message from Vagrant that says:  *Call to virStorageVolGetInfo
+  failed: Storage volume not found*.  The trick is to refresh the
+  libvirt storage pools.  Example:
+```
+$  sudo virsh pool-list
+ Name                 State      Autostart 
+-------------------------------------------
+ default              active     yes       
+ tmp                  active     yes 
+$  sudo virsh pool-refresh tmp
+Pool tmp refreshed
+$  sudo virsh pool-refresh default
+Pool default refreshed
+```
+  See https://kushaldas.in/posts/storage-volume-error-in-libvirt-with-vagrant.html
+
 Miscellaneous resources
 ----------------------
 
