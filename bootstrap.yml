@@ -6,7 +6,7 @@
 
   tasks:
     - name: install needed packages
-      yum: name={{item}} state=installed
+      package: name={{item}} state=installed
       with_items:
         - acpid
         - git
@@ -19,7 +19,7 @@
       when: ansible_os_family == "RedHat"
 
     - name: remove firewalld
-      yum: name=firewalld state=absent
+      package: name=firewalld state=absent
       when: ansible_os_family == "RedHat"
 
     - name: create user vagrant
