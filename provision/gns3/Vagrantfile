@@ -1,0 +1,24 @@
+# -*- mode: ruby -*-
+
+# Vagrantfile API/syntax version.
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+
+  config.vm.define "gns3" do |guest|
+    guest.vm.box = "fedora-23"
+  end
+  config.ssh.username = 'root'
+
+  config.vm.provider :libvirt do |libvirt|
+    libvirt.driver   = 'kvm'
+    libvirt.username = 'root'
+    libvirt.connect_via_ssh = false
+    libvirt.storage_pool_name = 'builder'
+  end
+
+  config.vm.provision :ansible do |ansible|
+    ansible.playbook = 'vagrant-gns3.yml'
+  end 
+
+end

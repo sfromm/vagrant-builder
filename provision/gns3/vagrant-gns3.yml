@@ -1,0 +1,62 @@
+---
+- hosts: all
+
+  tasks:
+
+    - name: install prerequisites
+      package: name={{ item }} state=installed
+      with_items:
+        - git
+        - gcc
+        - make
+        - cmake
+        - flex
+        - bison
+        - redhat-rpm-config
+        - libuuid-devel
+        - libpcap-devel
+        - telnet
+        - python3-devel
+        - python-pip
+        - python3-setuptools
+        - python3-tornado
+        - python3-netifaces
+        - python3-sip
+        - python3-PyQt4
+        - python3-PyQt5
+        - python3-zmq
+        - python3-chardet
+        - python3-jinja2
+        - "@virtualization"
+        - "@base-x"
+        - "@gnome"
+
+    - name: install gns3 via pip
+      pip: name={{ item }} executable=pip3 state=present
+      with_items:
+        - gns3-server
+        - gns3-gui
+
+    - name: create src path
+      file: path=/usr/local/src state=directory
+
+    - name: clone misc repositories
+      git: >-
+        repo={{ item.repo }}
+        dest=/usr/local/src/{{ item.dest }}
+      with_items:
+        - { repo: "https://github.com/GNS3/dynamips",   dest: dynamips }
+
+    - name: build install dynamips
+      shell:
+        chdir=/usr/local/src/dynamips
+        mkdir build && cd build &&
+        cmake .. &&
+        make install
+        creates=/usr/local/src/dynamips/build/stable/dynamips
+
+    - name: set graphical as default target
+      command: systemctl set-default graphical.target
+
+    - name: enable libvirtd
+      service: name=libvirtd enabled=yes state=running
