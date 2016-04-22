@@ -29,12 +29,11 @@ virt_builder_images:
       --run-command "yum -y install epel-release"
       --run-command "yum -y install ansible"
       --run-command "ansible-playbook -i /root/hosts /root/bootstrap.yml"
-  - name: centos-6
-    options: |
-      --run-command "yum -y install epel-release"
-      --run-command "yum -y install ansible"
-      --run-command "ansible-playbook -i /root/hosts /root/bootstrap.yml"
   - name: debian-8
     options: |
       --run-command "apt-get --yes install ansible"
+      --run-command "ansible-playbook -i /root/hosts /root/bootstrap.yml"
+  - name: fedora-23
+    options: |
+      --run-command "dnf -y install ansible python2 python2-dnf"
       --run-command "ansible-playbook -i /root/hosts /root/bootstrap.yml"
