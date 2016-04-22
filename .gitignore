@@ -1,3 +1,4 @@
 .vagrant
+*.retry
 /provision/gns3/images/*
 !/provision/gns3/images/.keep
