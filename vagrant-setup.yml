@@ -13,14 +13,14 @@
       service: name=libvirtd state=started enabled=yes
 
     - name: create virt-builder conf
-      template: src=virt-builder.conf.j2 dest=/etc/virt-builder/repos.d/local.conf
+      template: src=files/virt-builder.conf.j2 dest=/etc/virt-builder/repos.d/local.conf
 
     - name: create polkit pkla file
       copy: >
-        src=vagrant.pkla
+        src=files/vagrant.pkla
         dest=/etc/polkit-1/localauthority/50-local.d/vagrant.pkla
 
     - name: create polkit rules file
       copy: >-
-        src=vagrant.rules
+        src=files/vagrant.rules
         dest=/etc/polkit-1/rules.d/80-vagrant.rules

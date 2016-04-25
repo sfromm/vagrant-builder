@@ -4,7 +4,7 @@ vagrant-builder
 This is intended to set up a workstation for vagrant and build base
 boxes for use with Vagrant and Libvirt.  The playbook
 **vagrant-setup.yml** is tested with Fedora 21, but should also work
-with Fedora 22.
+with Fedora 22 and later.
 
 There are two ansible playbooks:
 
@@ -21,13 +21,9 @@ General usage:
 Customization
 -------------
 
-If you want to customize the build of your *vagrant* *box*, there are
-two options:
-
-- Customize the variable `virt_builder_options` or
-  `virt_builder_images`.  Values for these variables are passed to
-  *virt-builder*.  This variable is defined via inventory.
-- Customize *bootstrap.yml*, the playbook that is run when the image is customized.
+If you want to customize the build of your *vagrant* *box*, you can
+customize the inventory variables in *group_vars/all*.  Variables are
+described below.
 
 Inventory variables can be overridden by editing the group inventory file or
 updating a *host_vars/localhost*.  The latter method is recommended.
@@ -40,7 +36,8 @@ variables.
 
 - **vagrant_pkgs**: List of packages to install to use vagrant.
   Defaults to `vagrant`, `vagrant-libvirt`, `libvirt`,
-  `libvirt-daemon-kvm`, and `libguestfs-tools`.
+  `libvirt-daemon-kvm`, `libguestfs-tools`, `libguestfs-xfs`, and
+  `virt-install`.
 - **user_home**: Value of `$HOME`.
 - **builder_dir**: Where to build the boxes.  Defaults to
   `$HOME/builder`.
@@ -48,14 +45,19 @@ variables.
 - **size**: Size of image.  Defaults to `10`G.
 - **vagrant_metadata**:  A JSON string used for *metadata.json* that
   defines format, size, and provider.
-- **vagrant_pass**:  Encrypted password for *vagrant* user.  Defaults to
-  `vagrant`.
+- **password**: Password used for users `root` and `vagrant`.  Defaults
+  to `vagrant`.
+- **virt_builder_install**:  List of packages to install, regardless of
+  distribution.  Defaults to `rsync`, `sudo`, `acpid`, `openssh-server`,
+  `openssh-clients`, and `wget`.  Can be overrode on a per box bases.
 - **virt_builder_options**:  Options passed to *virt-builder* when
   creating the image.  These are options common to any image creation.
 - **virt_builder_images**: List of images to build for vagrant.  Each
-  element in the list is a dictionary with two keys: `name`, the guest
-  to build, and `options`, the options to pass to *virt-builder* when
-  building a specific image.
+  element in the list is a dictionary with two keys: `name` (the guest
+  to build), `install` (list of packages to install), and `options` (the
+  options to pass to *virt-builder* when building a specific image).
+  `install` will override the default list of packages to install.
+  `options` works in conjunction with `virt_builder_options`.
 
 Workflow
 --------
@@ -84,6 +86,16 @@ $ $EDITOR vagrant.yml
 $ vagrant up
 $ vagrant provision
 ```
+
+You can test the image by importing it directly into libvirt using
+*virt-install --import* option:
+
+```
+# virt-install --import --name guest --ram 2048 \
+   --disk path=box.img,format=raw --os-variant fedora23
+```
+
+You can get a list of OS variants with `osinfo-query os`.
 
 Possible Issues
 -------------------

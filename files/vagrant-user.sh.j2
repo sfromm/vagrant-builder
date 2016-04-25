@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# Add user vagrant
+grep vagrant /etc/passwd > /dev/null
+if [ $? -ne 0 ]; then
+    useradd -G wheel vagrant
+    echo '{{ password }}' | passwd --stdin vagrant
+fi
+
+# Add to group adm if it exists
+grep '^adm:' /etc/group > /dev/null
+if [ $? -eq 0 ]; then
+    usermod -G adm vagrant
+fi
+
+# Deploy vagrant user SSH key
+mkdir -m 700 ~vagrant/.ssh
+cp /root/vagrant.pub ~vagrant/.ssh/authorized_keys
+chmod 600 ~vagrant/.ssh/authorized_keys
+chown -R vagrant:vagrant ~vagrant/.ssh
