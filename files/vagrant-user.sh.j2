@@ -4,7 +4,7 @@
 grep vagrant /etc/passwd > /dev/null
 if [ $? -ne 0 ]; then
     useradd -G wheel vagrant
-    echo '{{ password }}' | passwd --stdin vagrant
+    echo 'vagrant:{{ password }}' | chpasswd
 fi
 
 # Add to group adm if it exists
