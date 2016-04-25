@@ -42,12 +42,9 @@
         creates={{ builder_dir }}/{{ item.name }}/box.img
         virt-builder {{ item.name }}
         --output {{ item.name }}/box.img
-        --ssh-inject root:file:{{ builder_dir }}/vagrant.pub
         --install {{ ",".join(item.install) | default( ",".join(virt_builder_install )) }}
         {{ item.options | default("") }}
         {{ virt_builder_options }}
-        --upload {{ builder_dir }}/vagrant.pub:/root
-        --run vagrant-user.sh
 
     - name: sparsify the images
       with_items: virt_builder_images

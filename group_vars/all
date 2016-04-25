@@ -30,6 +30,9 @@ virt_builder_options: |
   --format {{ format }}
   --size {{ size }}G
   --root-password file:{{ builder_dir }}/password
+  --ssh-inject root:file:{{ builder_dir }}/vagrant.pub
+  --upload {{ builder_dir }}/vagrant.pub:/root
+  --run vagrant-user.sh
   --update
 virt_builder_images:
   - name: centos-7.1
