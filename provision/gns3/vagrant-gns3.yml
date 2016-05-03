@@ -1,5 +1,6 @@
 ---
-- hosts: all
+- name: install gns3
+  hosts: all
 
   tasks:
 
@@ -12,6 +13,7 @@
         - cmake
         - flex
         - bison
+        - elfutils-libelf-devel
         - redhat-rpm-config
         - libuuid-devel
         - libpcap-devel
