@@ -29,6 +29,7 @@
         - python3-zmq
         - python3-chardet
         - python3-jinja2
+        - xterm
         - "@virtualization"
         - "@base-x"
         - "@gnome"
