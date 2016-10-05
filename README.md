@@ -75,10 +75,12 @@ be run as needed to build new boxes or update existing ones.
 $ $EDITOR host_vars/localhost
 $ ansible-playbook vagrant-builder.yml
 ```
-3. Change to a working directory (eg. `cd provision`) and run
-*vagrant*.  You can copy the *Vagrantfile* to the subdirectory.  You
-probably also want to create an Ansible playbook to provision your
-Vagrant machine.
+3. Once you have a set of base images to work with, it is time to create
+vagrant for your projects.  This can be testing new software
+deployments, configuration changes, and so on.  Change to a working
+directory (eg. `cd provision`) and run *vagrant*.  You can copy the
+*Vagrantfile* to the subdirectory.  You probably also want to create an
+Ansible playbook to provision your Vagrant machine.
 ```
 $ cp Vagrantfile provision/ && cd provision
 $ $EDITOR Vagrantfile
